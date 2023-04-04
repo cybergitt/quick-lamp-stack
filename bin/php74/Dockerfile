@@ -1,4 +1,4 @@
-FROM php:7.4.2-apache-buster
+FROM php:7.4.28-apache-buster
 
 # Surpresses debconf complaints of trying to install apt packages interactively
 # https://github.com/moby/moby/issues/4032#issuecomment-192327844
@@ -10,7 +10,6 @@ RUN apt-get -y update --fix-missing && \
     apt-get upgrade -y && \
     apt-get --no-install-recommends install -y apt-utils && \
     rm -rf /var/lib/apt/lists/*
-
 
 # Install useful tools and install important libaries
 RUN apt-get -y update && \
@@ -43,11 +42,9 @@ RUN pecl install redis-5.1.1 && \
     docker-php-ext-enable redis
 
 # Install imagick
-RUN apt-get update && \
-    apt-get -y --no-install-recommends install --fix-missing libmagickwand-dev && \
-    rm -rf /var/lib/apt/lists/* && \
-    pecl install imagick && \
-    docker-php-ext-enable imagick
+RUN apt-get update && apt-get install -y libmagickwand-dev --no-install-recommends && rm -rf /var/lib/apt/lists/*
+RUN printf "\n" | pecl install imagick
+RUN docker-php-ext-enable imagick
 
 # Other PHP7 Extensions
 
